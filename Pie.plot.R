@@ -20,7 +20,8 @@ option_list <- list(
   make_option("--header", default = TRUE, 
               help = "the input file has header [default=%default]"),
   make_option(c("-o", "--output"), type = "character", default = "Pie.plot.out.pdf",
-              help="output file name [default= %default]", metavar="character"),
+              help="output file name. Must have a pdf extension (e.g. 'What.ever.pdf') [default= %default]", 
+              metavar="character"),
   make_option(c("-t", "--title"), type="character", default = "Input Matrix",
               help = "Title of Pie plot [default=%default]")
   
@@ -29,7 +30,7 @@ option_list <- list(
 opt_parser = OptionParser(option_list=option_list);
 opt = parse_args(opt_parser);
 
-### 
+### output file name. Must have a proper image extension (e.g. .pdf, .png)
 
 if (is.null(opt$file)){
   print_help(opt_parser)
@@ -53,9 +54,10 @@ full_labels <- paste(labels, counts, sep = ": ")
 
 ### Plot:
 
+pdf(file = opt$output, width = 0, height = 0, paper = "a4r")
 pie(x=counts, labels = full_labels, main=opt$title,
     col = brewer.pal(length(full_labels), "Set1"), cex=1.5 )
-
+dev.off()
 
 
 
