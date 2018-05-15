@@ -23,14 +23,14 @@ Usage:
 ## 2) Pie.plot.R
 
 Features:
-* 1) Handling command-flags
-* 2) Handling standard input
-* 3) Handling multiple input files
+* 1) Handling command-flags: *available*
+* 2) Handling standard input: *not available*
+* 3) Handling multiple input files: *not available*
 
 Usage:
 
 ```{r}
 
-./Pie.plot.R   input.list.txt
+./Pie.plot.R  --file=Input.file.txt  --header=TRUE  --title="Regeneration samples"
 
 ```
