@@ -31,6 +31,6 @@ Usage:
 
 ```{r}
 
-./Pie.plot.R  --file=Input.file.txt  --header=TRUE  --title="Regeneration samples"
+./Pie.plot.R  --file=Input.file.txt  --header=TRUE  --title="Regeneration samples" --output="Regeneration.Replicates.0h.pdf"
 
 ```
