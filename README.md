@@ -19,3 +19,18 @@ Usage:
 ./Obtaining.metadata.R  List_of_AS_events.txt
 
 ```
+
+## 2) Pie.plot.R
+
+Features:
+* 1) Handling command-flags
+* 2) Handling standard input
+* 3) Handling multiple input files
+
+Usage:
+
+```{r}
+
+./Pie.plot.R   input.list.txt
+
+```
