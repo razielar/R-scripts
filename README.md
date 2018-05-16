@@ -23,14 +23,24 @@ Usage:
 ## 2) Pie.plot.R
 
 Features:
-* 1) Handling command-flags: *available*
-* 2) Handling standard input: *not available*
-* 3) Handling multiple input files: *not available*
+* **1)** Handling command-flags: *available*
+* **2)** Handling standard input: *available*
+* **3)** Handling multiple input files: *not available yet*
 
-Usage:
+There are two types of usage:
+
+**1)** Default usage: the input file is the standard input:
 
 ```{r}
 
-./Pie.plot.R  --file=Input.file.txt  --header=TRUE  --title="Regeneration samples" --output="Regeneration.Replicates.0h.pdf"
+awk -F "\t" '{print $2}' Input.file.txt | ./Pie.plot.R
+
+```
+
+**2)** Specifying some features:
+
+```{r}
+
+./Pie.plot.R --input=Input.file.txt --header=TRUE --output="trial.pdf" --title="Example"
 
 ```
