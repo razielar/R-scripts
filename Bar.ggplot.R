@@ -16,7 +16,7 @@ option_list <- list(
               help = "input file [default=%default]", metavar = "character"),
   make_option("--header", default = TRUE, 
               help = "the input file has header [default=%default]"),
-  make_option(c("-o", "--output"), type = "character", default = "Pie.plot.out.pdf",
+  make_option(c("-o", "--output"), type = "character", default = "Bar.plot.out.pdf",
               help="output file name. Must have a pdf extension (e.g. 'What.ever.pdf') [default= %default]", 
               metavar="character"),
   make_option(c("-t", "--title"), type="character", default = "Input Matrix",
@@ -24,7 +24,7 @@ option_list <- list(
   make_option(c("-x", "--x_axis"), type = "character", default = " ",
               help = "Name of the x-axis [default=%default]"),
   make_option(c("-y", "--y_axis"), type = "character", default = "Count",
-              help = "Nmae of the y-axis [default=%default]")
+              help = "Name of the y-axis [default=%default]")
   
 )
 
@@ -50,7 +50,34 @@ if (opt$input == "stdin") {
 
 Input[,1] <- as.character(Input[,1])
 
-print(Input[1,1])
+Input <- data.frame(Header=Input[order(Input$classification),])
+
+Input <- Input %>% group_by(Header) %>% summarise(Frequency=n()) %>% arrange(desc(Frequency))
+
+max_value <- as.numeric(Input[1,2])
+max_value <- floor(max_value+max_value*0.05)
+interval_value <- floor(max_value/10)
+
+#### Bar plot: 
+
+pdf(file = opt$output, width = 0, height = 0, paper = "a4r")
+
+ggplot(data = Input, aes(x=Header, y=Frequency))+geom_bar(stat = "identity", fill= "steelblue",
+                                                          alpha=0.9)+ggtitle(opt$title)+
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"), axis.text.y = element_text(face = "bold"),
+        axis.text.x = element_text(face = "bold", angle = 45, hjust = 1), 
+        text = element_text(size=13, face = "bold"))+xlab(opt$x_axis)+
+  geom_text(aes(label=Frequency), vjust=-0.35)+scale_y_continuous(breaks = seq(0, max_value, interval_value))
+
+dev.off()
+
+
+
+
+
+
+
+
 
 
 
