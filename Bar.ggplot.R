@@ -70,7 +70,7 @@ if (opt$x_axis_rotation){
                                                             alpha=0.9)+ggtitle(opt$title)+
     theme(plot.title = element_text(hjust = 0.5, face = "bold"), axis.text.y = element_text(face = "bold"),
           axis.text.x = element_text(face = "bold", angle = 45, hjust = 1), 
-          text = element_text(size=13, face = "bold"))+xlab(opt$x_axis)+
+          text = element_text(size=13, face = "bold"))+xlab(opt$x_axis)+ylab(opt$y_axis)+
     geom_text(aes(label=Frequency), vjust=-0.35)+scale_y_continuous(breaks = seq(0, max_value, interval_value))
   
   #dev.off()
@@ -83,7 +83,7 @@ if (opt$x_axis_rotation){
                                                             alpha=0.9)+ggtitle(opt$title)+
     theme(plot.title = element_text(hjust = 0.5, face = "bold"), axis.text.y = element_text(face = "bold"),
           axis.text.x = element_text(face = "bold"), 
-          text = element_text(size=13, face = "bold"))+xlab(opt$x_axis)+
+          text = element_text(size=13, face = "bold"))+xlab(opt$x_axis)+ylab(opt$y_axis)+
     geom_text(aes(label=Frequency), vjust=-0.35)+scale_y_continuous(breaks = seq(0, max_value, interval_value))
   
   #dev.off()
