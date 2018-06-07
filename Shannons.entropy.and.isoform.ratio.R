@@ -18,7 +18,9 @@ option_list <- list(
   make_option(c("-o", "--output"), type = "character", default = "Shannon.isoform.ratio.Output.txt",
               help="output file name. [default= %default]", metavar="character"),
   make_option("--GTF_header", default = FALSE, 
-              help = "the input GTF file has header [default=%default]")
+              help = "the input GTF file has header [default=%default]"),
+  make_option(c("-t", "--type"), type = "character", default = "Shannons.entropy",
+              help = "Either compute the Shannon's entropy or Isoform ratio. [default= %default]")
   
 )
 
@@ -47,6 +49,7 @@ colnames(GTF_file) <- c("GeneID", "TranscriptID", "Gene_Name", "Transcript_Name"
 GTF_file <- GTF_file[order(GTF_file$Gene_Name),] 
 rownames(GTF_file) <- 1:nrow(GTF_file)
 GTF_file$Gene_Name <- as.character(GTF_file$Gene_Name)
+GTF_file$Gene_Name <- gsub(" ", "", GTF_file$Gene_Name)
 
 ### Select Genes with more than 2 isoforms: 
 
@@ -57,6 +60,24 @@ Isoform_frquency$Gene_Name <- gsub(" ", "", Isoform_frquency$Gene_Name)
 
 Isoform_frquency <- Isoform_frquency[Isoform_frquency$Frequency >= 2,]
 Isoform_frquency <- Isoform_frquency[order(Isoform_frquency$Gene_Name),] 
+
+### New GTF file: 
+
+GTF_file <- GTF_file[which(GTF_file$Gene_Name %in% Isoform_frquency$Gene_Name),]
+GTF_file$TranscriptID <- gsub(" ", "", as.character(GTF_file$TranscriptID))
+rownames(GTF_file) <- 1:nrow(GTF_file)
+
+### Modify the Transcript matrix: 
+
+Isoform_expr <- Isoform_expr[ which( rownames(Isoform_expr) %in% GTF_file$TranscriptID  )  ,] 
+
+###### Change the rownames of the Transcript matrix from Transcript ID to Transcript Name
+
+#### Improve the code 
+#### Make a match function in order to change TranscriptID to Transcript Name, then compute the two functions
+#### Isoform ratio and Shannon's entropy 
+
+
 
 
 
