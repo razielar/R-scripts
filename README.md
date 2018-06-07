@@ -23,13 +23,13 @@ Usage:
 ## 2) Pie.plot.R
 
 Features:
-* **1)** Handling command-flags: *available*
-* **2)** Handling standard input: *available*
-* **3)** Handling multiple input files: *not available yet*
+* Handling command-flags: *available*
+* Handling standard input: *available*
+* Handling multiple input files: *not available yet*
 
 There are two types of usage:
 
-**1)** Default usage: the input file is the standard input:
+**a)** Default usage: the input file is the standard input:
 
 ```{r}
 
@@ -37,10 +37,21 @@ awk -F "\t" '{print $2}' Input.file.txt | ./Pie.plot.R
 
 ```
 
-**2)** Specifying some features:
+**b)** Specifying some features:
 
 ```{r}
 
 ./Pie.plot.R --input=Input.file.txt --header=TRUE --output="trial.pdf" --title="Example"
+
+```
+## 3) Bar.ggplot.R
+
+Same features as *Pie.plot.R*
+
+Usage:
+
+```{r}
+
+cat list_of_elements | ./Bar.ggplot.R --title="Desired title" --x_axis_rotation=TRUE 
 
 ```
