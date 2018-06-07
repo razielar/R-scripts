@@ -24,7 +24,9 @@ option_list <- list(
   make_option(c("-x", "--x_axis"), type = "character", default = " ",
               help = "Name of the x-axis [default=%default]"),
   make_option(c("-y", "--y_axis"), type = "character", default = "Count",
-              help = "Name of the y-axis [default=%default]")
+              help = "Name of the y-axis [default=%default]"),
+  make_option("--x_axis_rotation", default = FALSE,
+              help = "the x axis rotation [default=%default]")
   
 )
 
@@ -60,35 +62,38 @@ interval_value <- floor(max_value/10)
 
 #### Bar plot: 
 
+if (opt$x_axis_rotation){
+  
+  #pdf(file = opt$output, width = 0, height = 0, paper = "a4r")
+  
+  p <- ggplot(data = Input, aes(x=Header, y=Frequency))+geom_bar(stat = "identity", fill= "steelblue",
+                                                            alpha=0.9)+ggtitle(opt$title)+
+    theme(plot.title = element_text(hjust = 0.5, face = "bold"), axis.text.y = element_text(face = "bold"),
+          axis.text.x = element_text(face = "bold", angle = 45, hjust = 1), 
+          text = element_text(size=13, face = "bold"))+xlab(opt$x_axis)+
+    geom_text(aes(label=Frequency), vjust=-0.35)+scale_y_continuous(breaks = seq(0, max_value, interval_value))
+  
+  #dev.off()
+  
+} else {
+  
+  #pdf(file = opt$output, width = 0, height = 0, paper = "a4r")
+  
+  p <- ggplot(data = Input, aes(x=Header, y=Frequency))+geom_bar(stat = "identity", fill= "steelblue",
+                                                            alpha=0.9)+ggtitle(opt$title)+
+    theme(plot.title = element_text(hjust = 0.5, face = "bold"), axis.text.y = element_text(face = "bold"),
+          axis.text.x = element_text(face = "bold"), 
+          text = element_text(size=13, face = "bold"))+xlab(opt$x_axis)+
+    geom_text(aes(label=Frequency), vjust=-0.35)+scale_y_continuous(breaks = seq(0, max_value, interval_value))
+  
+  #dev.off()
+  
+}
+
 pdf(file = opt$output, width = 0, height = 0, paper = "a4r")
 
-ggplot(data = Input, aes(x=Header, y=Frequency))+geom_bar(stat = "identity", fill= "steelblue",
-                                                          alpha=0.9)+ggtitle(opt$title)+
-  theme(plot.title = element_text(hjust = 0.5, face = "bold"), axis.text.y = element_text(face = "bold"),
-        axis.text.x = element_text(face = "bold", angle = 45, hjust = 1), 
-        text = element_text(size=13, face = "bold"))+xlab(opt$x_axis)+
-  geom_text(aes(label=Frequency), vjust=-0.35)+scale_y_continuous(breaks = seq(0, max_value, interval_value))
+p
 
 dev.off()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
