@@ -27,12 +27,17 @@ option_list <- list(
 opt_parser <-  OptionParser(option_list=option_list)
 opt <- parse_args(opt_parser)
 
-######### Read input files: 
+################################# 1) Read input files: 
+
+options(stringsAsFactors = FALSE)
 
 #For debugging: 
 
+# GTF_file <- read.delim("/Users/raziel/Downloads/FlyIDGene.FlyIDTranscript.GeneName.TranscriptName.GeneType.TranscriptType.txt",
+#                        header = FALSE)
 # GTF_file <- read.delim("/users/rg/ramador/D_me/Data/GenomeAnnotation/FlyIDGene.FlyIDTranscript.GeneName.TranscriptName.GeneType.TranscriptType.txt",
 #                        header = FALSE)
+# Isoform_expr <- read.delim("/Users/raziel/Downloads/regeneration.dmel.transcript.TPM.idr_NA.tsv")
 # Isoform_expr <- read.delim("/nfs/no_backup/rg/cklein/dmel/regeneration/grape.pipeline/matrices/regeneration.dmel.transcript.TPM.idr_NA.tsv")
 # Isoform_expr <- Isoform_expr[,18:21]
 
@@ -41,22 +46,90 @@ GTF_file <- read.delim(opt$annotation, header = opt$GTF_header)
 Isoform_expr <- read.delim(opt$input_matrix, header = TRUE)
 Isoform_expr[is.na(Isoform_expr)] <- 0
 
-##### Modify GTF file: 
+################################# 2) Functions: 
+
+### 2.1) Isoform ratio: 
+
+fCalculate.isoform.ratio.per.gene <- function(Input.Matrix){
+  
+  new_name <- strsplit(rownames(Input.Matrix), split = "-", fixed = TRUE)
+  new_name <- lapply(new_name, function(x){ y <-x[1:(length(x)-1)]; paste0(y,collapse = "-")}) 
+  new_name <- new_name %>% unlist()
+  
+  tmp.matrix <- Input.Matrix %>% mutate(Transcript=new_name)
+  
+  test <- function(x){
+    
+    glob <- x %>% select(-Transcript)
+    sumvals <- colSums(glob)
+    result <- sapply(1:length(sumvals), function(x){ round(glob[,x]/sumvals[x], digits = 4)}) %>% 
+      do.call(rbind, .) %>% t
+    
+    return(as.data.frame(result))
+    
+    }
+  
+  tmp.isoform.ratio <- tmp.matrix %>% group_by(Transcript) %>% do(test(.)) 
+  tmp.isoform.ratio <- tmp.isoform.ratio[,-1] %>% as.data.frame() 
+  rownames(tmp.isoform.ratio) <- rownames(Input.Matrix)
+  
+  return(tmp.isoform.ratio) 
+  
+}
+
+### 2.2) Shannon's splicing: 
+
+f.Calculate_Shannon_splicing <- function(Input.matrix){
+  
+  new_name <- strsplit(rownames(Input.matrix), split = "-", fixed = TRUE)
+  new_name <- lapply(new_name, function(x){ y <-x[1:(length(x)-1)]; paste0(y,collapse = "-")}) 
+  new_name <- new_name %>% unlist()
+  
+  tmp.matrix <- Input.matrix %>% mutate(Transcript=new_name)
+  
+  Shannon_splicing <- function(x){
+    
+    #1) Calculate the isoform ratio:
+    
+    glob <- x %>% select(-Transcript) #dataframe: with the replicates
+    sumvals <- colSums(glob) #numeric value: sum of the columns
+    result <- sapply(1:length(sumvals), function(x){ round(glob[,x]/sumvals[x], digits = 4)}) %>% 
+      do.call(rbind, .) %>% t #sapply: return a vector; dataframe
+    
+    #2) Calculate the Shannon's entropy:
+    
+    shannon_entropy <- round(-colSums(result*log(result)), digits = 4) #Shannon's formula
+    shannon_entropy <- t(as.data.frame(shannon_entropy))
+    shannon_entropy <- data.frame(shannon_entropy)
+    
+  }
+  
+  tmp.isoform.ratio <- tmp.matrix %>% group_by(Transcript) %>% do(Shannon_splicing(.)) 
+  tmp.isoform.ratio <- tmp.isoform.ratio %>% as.data.frame()
+  #tmp.isoform.ratio <- fColnames.GTEx(tmp.isoform.ratio)
+  
+  return(tmp.isoform.ratio)
+  
+}
+
+################################# 3) Pre-processing 
+
+### Modify GTF file: 
 
 GTF_file <- GTF_file[, 1:4]
 colnames(GTF_file) <- c("GeneID", "TranscriptID", "Gene_Name", "Transcript_Name")
 
+# Remove white-specases in GTF_file 
+
+for (i in 1:ncol(GTF_file)) {GTF_file[,i] <- gsub(" ", "", GTF_file[,i])}
+
 GTF_file <- GTF_file[order(GTF_file$Gene_Name),] 
 rownames(GTF_file) <- 1:nrow(GTF_file)
-GTF_file$Gene_Name <- as.character(GTF_file$Gene_Name)
-GTF_file$Gene_Name <- gsub(" ", "", GTF_file$Gene_Name)
 
 ### Select Genes with more than 2 isoforms: 
 
 Isoform_frquency <- GTF_file %>% group_by(Gene_Name) %>% summarise(Frequency=n()) %>% 
   arrange(desc(Frequency))
-
-Isoform_frquency$Gene_Name <- gsub(" ", "", Isoform_frquency$Gene_Name)
 
 Isoform_frquency <- Isoform_frquency[Isoform_frquency$Frequency >= 2,]
 Isoform_frquency <- Isoform_frquency[order(Isoform_frquency$Gene_Name),] 
@@ -64,16 +137,15 @@ Isoform_frquency <- Isoform_frquency[order(Isoform_frquency$Gene_Name),]
 ### New GTF file: 
 
 GTF_file <- GTF_file[which(GTF_file$Gene_Name %in% Isoform_frquency$Gene_Name),]
-GTF_file$TranscriptID <- gsub(" ", "", as.character(GTF_file$TranscriptID))
 rownames(GTF_file) <- 1:nrow(GTF_file)
 
 ### Modify the Transcript matrix: 
 
 Isoform_expr <- Isoform_expr[ which( rownames(Isoform_expr) %in% GTF_file$TranscriptID  )  ,] 
 
-###### Change the rownames of the Transcript matrix from Transcript ID to Transcript Name
+### Change the rownames of the Transcript matrix from Transcript ID to Transcript Name
 
-#### Improve the code 
+
 #### Make a match function in order to change TranscriptID to Transcript Name, then compute the two functions
 #### Isoform ratio and Shannon's entropy 
 
