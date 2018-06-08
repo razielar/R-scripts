@@ -73,6 +73,8 @@ fCalculate.isoform.ratio.per.gene <- function(Input.Matrix){
   tmp.isoform.ratio <- tmp.isoform.ratio[,-1] %>% as.data.frame() 
   rownames(tmp.isoform.ratio) <- rownames(Input.Matrix)
   
+  tmp.isoform.ratio[is.na(tmp.isoform.ratio)] <- 0
+
   return(tmp.isoform.ratio) 
   
 }
@@ -145,12 +147,28 @@ Isoform_expr <- Isoform_expr[ which( rownames(Isoform_expr) %in% GTF_file$Transc
 
 ### Change the rownames of the Transcript matrix from Transcript ID to Transcript Name
 
+### Check the same order: 
 
-#### Make a match function in order to change TranscriptID to Transcript Name, then compute the two functions
-#### Isoform ratio and Shannon's entropy 
+Isoform_expr <- Isoform_expr[order(match(rownames(Isoform_expr), GTF_file$TranscriptID)),]
 
+rownames(Isoform_expr) <- GTF_file$Transcript_Name
 
+################################# 4) Apply the functions  
 
+if(opt$type){
+  
+  Result <- f.Calculate_Shannon_splicing(Isoform_expr)
+  
+} else {
+  
+  Result <- fCalculate.isoform.ratio.per.gene(Isoform_expr)
+  Result$Transcript.Name <- rownames(Result)
+  Result <- cbind(data.frame(Transcript.ID=GTF_file$TranscriptID) , Result)
+  rownames(Result) <- 1:nrow(Result)
+  Result <- Result[,c(1,6,2:ncol(Result))]
+  Result[,ncol(Result)] <- NULL
+}
 
+write.table(Result, file = opt$output, sep = "\t", col.names = TRUE, row.names = FALSE)
 
 
