@@ -19,7 +19,7 @@ option_list <- list(
               help="output file name. [default= %default]", metavar="character"),
   make_option("--GTF_header", default = FALSE, 
               help = "the input GTF file has header [default=%default]"),
-  make_option(c("-t", "--type"), type = "character", default = "Shannons.entropy",
+  make_option(c("-t", "--type"), default = TRUE ,
               help = "Either compute the Shannon's entropy or Isoform ratio. [default= %default]")
   
 )
@@ -162,11 +162,10 @@ if(opt$type){
 } else {
   
   Result <- fCalculate.isoform.ratio.per.gene(Isoform_expr)
-  Result$Transcript.Name <- rownames(Result)
+  Result <- cbind(data.frame(Transcript.Name=rownames(Result), Result))
   Result <- cbind(data.frame(Transcript.ID=GTF_file$TranscriptID) , Result)
   rownames(Result) <- 1:nrow(Result)
-  Result <- Result[,c(1,6,2:ncol(Result))]
-  Result[,ncol(Result)] <- NULL
+
 }
 
 write.table(Result, file = opt$output, sep = "\t", col.names = TRUE, row.names = FALSE)
