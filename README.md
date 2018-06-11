@@ -52,6 +52,22 @@ Usage:
 
 ```{r}
 
-cat list_of_elements | ./Bar.ggplot.R --title="Desired title" --x_axis_rotation=TRUE 
+cat list_of_elements | ./Bar.ggplot.R --title="Desired title" --x_axis_rotation=TRUE
+
+```
+
+## 4) Shannons.entropy.and.isoform.ratio.R
+
+Description:
+
+This script needs **two input** files, a transcript expression matrix in TPM/RPKM/FPMK and a GTF file with the **specific order**: *Gene_ID, Transcript_ID, Gene_Name and Transcript_name* the rest of information within the GTF will be ignored.  
+
+Features:
+* Handling command-flags: *available*
+* Handling standard input: *not available*
+
+```{r}
+
+./Shannons.entropy.and.isoform.ratio.R  --input_matrix=/Folder/Transcription.matrix.TPM.tsv  --annotation=/Folder/GTF.file.txt
 
 ```
