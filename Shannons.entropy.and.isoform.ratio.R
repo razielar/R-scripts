@@ -72,7 +72,6 @@ fCalculate.isoform.ratio.per.gene <- function(Input.Matrix){
   tmp.isoform.ratio <- tmp.matrix %>% group_by(Transcript) %>% do(test(.)) 
   tmp.isoform.ratio <- tmp.isoform.ratio[,-1] %>% as.data.frame() 
   rownames(tmp.isoform.ratio) <- rownames(Input.Matrix)
-  
   tmp.isoform.ratio[is.na(tmp.isoform.ratio)] <- 0
 
   return(tmp.isoform.ratio) 
@@ -155,9 +154,23 @@ rownames(Isoform_expr) <- GTF_file$Transcript_Name
 
 ################################# 4) Apply the functions  
 
+#Result_tmp_shannon <- f.Calculate_Shannon_splicing(tmp)
+# Result_shannon <- f.Calculate_Shannon_splicing(Isoform_expr)
+# 
+# entropy <- function(x)  {
+#   
+#   x = x[!is.na(x)]
+#   x =x[x!=0]
+#   p=x/sum(x) 
+#   if (length(x) != 0) {return(-sum(p*log(p)))} else {NA}
+# 
+# }
+
 if(opt$type){
   
   Result <- f.Calculate_Shannon_splicing(Isoform_expr)
+  colnames(Result)[1] <- "Gene.Name"
+  Result <- cbind(data.frame(Gene.ID= unique(GTF_file$GeneID) ) , Result)
   
 } else {
   
