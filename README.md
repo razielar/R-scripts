@@ -70,6 +70,14 @@ Description:
 
 This script needs **two input** files, a transcript expression matrix in TPM/RPKM/FPMK and a GTF file with the **specific order**: *Gene_ID, Transcript_ID, Gene_Name and Transcript_name* the rest of information within the GTF will be ignored.  
 
+Example of GTF file:
+
+| Gene ID   |     Transcript ID     |  Gene Name |  Transcript Name  |
+|----------|:-------------:|------:| ------:|
+| FBgn0031208 | FBtr0300689 | CG11023 | CG11023-RB |
+| FBgn0031208 | FBtr0300690 | CG11023 | CG11023-RC|
+| FBgn0031208 | FBtr0330654 | CG11023 | CG11023-RD |
+
 Features:
 * Handling command-flags: *available*
 * Handling standard input: *not available*
