@@ -97,9 +97,11 @@ f.Calculate_Shannon_splicing <- function(Input.matrix){
     result <- sapply(1:length(sumvals), function(x){ round(glob[,x]/sumvals[x], digits = 4)}) %>% 
       do.call(rbind, .) %>% t #sapply: return a vector; dataframe
     
+    result[result[,1] == 0,] <- NA
+    
     #2) Calculate the Shannon's entropy:
     
-    shannon_entropy <- round(-colSums(result*log(result)), digits = 4) #Shannon's formula
+    shannon_entropy <- round(-colSums(result*log(result), na.rm = TRUE), digits = 4) #Shannon's formula
     shannon_entropy <- t(as.data.frame(shannon_entropy))
     shannon_entropy <- data.frame(shannon_entropy)
     
@@ -107,7 +109,8 @@ f.Calculate_Shannon_splicing <- function(Input.matrix){
   
   tmp.isoform.ratio <- tmp.matrix %>% group_by(Transcript) %>% do(Shannon_splicing(.)) 
   tmp.isoform.ratio <- tmp.isoform.ratio %>% as.data.frame()
-  #tmp.isoform.ratio <- fColnames.GTEx(tmp.isoform.ratio)
+  
+  tmp.isoform.ratio[tmp.isoform.ratio == 0] <- NA
   
   return(tmp.isoform.ratio)
   
@@ -154,18 +157,6 @@ rownames(Isoform_expr) <- GTF_file$Transcript_Name
 
 ################################# 4) Apply the functions  
 
-#Result_tmp_shannon <- f.Calculate_Shannon_splicing(tmp)
-# Result_shannon <- f.Calculate_Shannon_splicing(Isoform_expr)
-# 
-# entropy <- function(x)  {
-#   
-#   x = x[!is.na(x)]
-#   x =x[x!=0]
-#   p=x/sum(x) 
-#   if (length(x) != 0) {return(-sum(p*log(p)))} else {NA}
-# 
-# }
-
 if(opt$type){
   
   Result <- f.Calculate_Shannon_splicing(Isoform_expr)
@@ -182,5 +173,4 @@ if(opt$type){
 }
 
 write.table(Result, file = opt$output, sep = "\t", col.names = TRUE, row.names = FALSE)
-
 
