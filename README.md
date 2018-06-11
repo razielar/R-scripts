@@ -1,6 +1,14 @@
 # R scripts:
 
-## 1) Obtaining.metadata.R
+### Content:
+
+1. [Obtaining.metadata.R](#Obtaining)
+2. [Pie plot](#pie)
+3. [Count Bar plot](#bar)
+4. [Shannon's entropy and Isoform ratio](#entropy)
+
+
+## 1) <a id='Obtaining'></a> Obtaining.metadata.R
 
 AS: *Alternative splicing*
 
@@ -20,7 +28,7 @@ Usage:
 
 ```
 
-## 2) Pie.plot.R
+## 2) <a id='pie'></a> Pie.plot.R
 
 Features:
 * Handling command-flags: *available*
@@ -44,7 +52,7 @@ awk -F "\t" '{print $2}' Input.file.txt | ./Pie.plot.R
 ./Pie.plot.R --input=Input.file.txt --header=TRUE --output="trial.pdf" --title="Example"
 
 ```
-## 3) Bar.ggplot.R
+## 3) <a id='bar'></a> Bar.ggplot.R
 
 Same features as *Pie.plot.R*
 
@@ -56,7 +64,7 @@ cat list_of_elements | ./Bar.ggplot.R --title="Desired title" --x_axis_rotation=
 
 ```
 
-## 4) Shannons.entropy.and.isoform.ratio.R
+## 4) <a id='entropy'></a> Shannons.entropy.and.isoform.ratio.R
 
 Description:
 
