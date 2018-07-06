@@ -172,5 +172,5 @@ if(opt$type){
 
 }
 
-write.table(Result, file = opt$output, sep = "\t", col.names = TRUE, row.names = FALSE)
+write.table(Result, file = opt$output, sep = "\t", col.names = TRUE, row.names = FALSE, quote = FALSE)
 
