@@ -6,6 +6,7 @@
 2. [Pie plot](#pie)
 3. [Count Bar plot](#bar)
 4. [Shannon's entropy and Isoform ratio](#entropy)
+5. [Venn Diagram](#venn)
 
 
 ## 1) <a id='Obtaining'></a> Obtaining.metadata.R
@@ -87,3 +88,14 @@ Features:
 ./Shannons.entropy.and.isoform.ratio.R  --input_matrix=/Folder/Transcription.matrix.TPM.tsv  --annotation=/Folder/GTF.file.txt
 
 ```
+
+## 5) <a id='venn'></a> Venn.Diagram.R
+
+Description:
+
+Receives a tsv file and returns a Venn Diagram and a file with the intersections of the items of input file.
+
+Features:
+
+* Handling command-flags: *available*
+* Handling standard input: *available*
