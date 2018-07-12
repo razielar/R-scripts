@@ -52,7 +52,7 @@ if (opt$input == "stdin") {
 
 Input[,1] <- as.character(Input[,1])
 
-Input <- data.frame(Header=Input[order(Input[,1]),])
+Input <- data.frame(Header=Input[order(Input[,1]),]) #Modification 
 
 Input <- Input %>% group_by(Header) %>% summarise(Frequency=n()) %>% arrange(desc(Frequency))
 
