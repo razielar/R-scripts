@@ -19,7 +19,7 @@ option_list <- list(
               help = "input file [default= %default]", metavar = "character"),
   make_option("--header", default = TRUE, 
               help = "the input file has a header [default= %default]"),
-  make_option(c("-o", "--outout"), type = "character", default = "Venn.Diagram.Output.tiff",
+  make_option(c("-o", "--output"), type = "character", default = "Venn.Diagram.Output.tiff",
               help = "output file name. Must have a tiff extension (e.g. 'What.ever.tiff')
               [default= %default]", metavar= "character"),
   make_option(c("-t", "--title"), type = "character", default = "Input Matrix",
@@ -29,6 +29,8 @@ option_list <- list(
 
 opt_parser <-  OptionParser(option_list=option_list)
 opt <- parse_args(opt_parser)
+
+#############################
 
 ### Read the Input file:  
 
@@ -45,39 +47,48 @@ if (opt$input == "stdin") {
 ### For debugging inside Rstudio
 
 #Input <- read.delim("/users/rg/ramador/Scripts/tmp_files/Venn.R.out.txt", h=TRUE, na.strings = "")
+#Input <- read.delim("/users/rg/ramador/Scripts/tmp_files/Venn.4.fields.txt", h=TRUE, na.strings = "")
 
 ### This script can only do 5 comparisons 
 
-if( ncol(Input) <= 1 | ncol(Input) <= 5){
+if( ncol(Input) > 1 && ncol(Input) <= 5 ){
   
   cat("The number of comparisons is:", ncol(Input), "\n" )
   
   
 } else{
   
-  stop("The number of comparisons is", ncol(Input), "and this script can only do between 2 and 5 comparisons", "\n")
+  stop("The number of comparisons is ", ncol(Input), " and this script can only do between 2 and 5 comparisons", "\n")
   
 }
 
 ############### Draw the Venn Diagram: 
 
+
 if(ncol(Input) == 5){
   
-  cat("no")
+  cat("Not available yet")
   
 } else if (ncol(Input) == 4){
   
-  cat("no")
+  cat("Drawing the Venn Diagram with", ncol(Input), "comparisons", "\n")
+  
+  venn.diagram(list( "1"=Input[,1][complete.cases(Input[,1])], "2"=Input[,2][complete.cases(Input[,2])],
+                     "3"=Input[,3][complete.cases(Input[,3])], "4"=Input[,4][complete.cases(Input[,4])]),
+               filename = opt$output,
+               col="transparent", fill=c("darkorchid1", "green", "yellow", "cornflowerblue"), alpha=0.4,
+               cex=1.3, cat.cex=0.9, main = opt$title )
   
 } else if (ncol(Input) == 3){
   
   cat("Drawing the Venn Diagram with", ncol(Input), "comparisons", "\n")
   
-  venn.diagram(list("hola"= Input[,1][complete.cases(Input[,1])] , "adios"=Input[,2][complete.cases(Input[,2])],
-                    "bye"= Input[,3][complete.cases(Input[,3])] ),
-               filename = opt$outout ,
-               col="transparent", fill=c("darkorchid1", "green", "yellow"), alpha=0.4,
-               cex=1.1, cat.cex=0.9, main = opt$title)
+  venn.diagram(list("1"= Input[,1][complete.cases(Input[,1])],
+                    "2"= Input[,2][complete.cases(Input[,2])], 
+                    "3"= Input[,3][complete.cases(Input[,3])] ),
+               filename = opt$output ,
+               cex=1.3, col="transparent", fill=c("darkorchid1", "green", "yellow"), alpha=0.4,
+               main = opt$title  )
   
   
   
@@ -86,47 +97,40 @@ if(ncol(Input) == 5){
   cat("Drawing the Venn Diagram with", ncol(Input), "comparisons", "\n")
   
   venn.diagram(list("1"=Input[,1][complete.cases(Input[,1])] , "2"=Input[,2][complete.cases(Input[,2])]),
-               filename = opt$outout , col="transparent",
-               fill=c("darkorchid1", "green"), alpha=0.4, cex=1.1, cat.cex= 0.9,
-               main = opt$title, cat.pos= c(0,0), cat.dist = rep(0.025, 2), scaled= FALSE)
+               filename = opt$output , col="transparent",
+               fill=c("darkorchid1", "green"), alpha=0.4, cex=1.3, cat.cex= 0.9,
+               main = opt$title, cat.pos= c(0,0), cat.dist = rep(0.025, 2), scaled= FALSE )
+  
+  ### Print the Intersections and non-intersections 
+  
+  Intersection <- data.frame(Intersection=intersect(Input[,1], Input[,2]))
+  
+  new_name <- strsplit(opt$output, split = ".", fixed = TRUE)
+  new_name <- lapply(new_name, function(x){y <- x[1:(length(x)-1)]; paste0(y, collapse = ".")})
+  new_name <- new_name %>% unlist()
+  new_name <- paste0(new_name, ".txt")
+  
+  write.table(Intersection, file = new_name, sep = "/t", col.names = TRUE, quote = FALSE, row.names = FALSE)
+  
+  # tmp <- c(Input[,1][complete.cases(Input[,1])], Input[,2][complete.cases(Input[,2])]) 
+  # 
+  # Non_intersection <- tmp[which(!(tmp %in% Intersection$Intersection))]
+  # Non_intersection <- data.frame(Non_intersection=Non_intersection)
+  # 
+  # Final <- rbind(Intersection, Non_intersection)
+  
+  
   
 }
 
 
+### Put the name of the subsets: 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# venn.diagram(list("1"=Input[,1][complete.cases(Input[,1])] , "2"=Input[,2][complete.cases(Input[,2])]),
+#              filename = opt$output , col="transparent",
+#              fill=c("darkorchid1", "green"), alpha=0.4, cex=1.3, cat.cex= 0.9,
+#              main = opt$title, cat.pos= c(0,0), cat.dist = rep(0.025, 2), scaled= FALSE,
+#              category.names = c( opt$subset_titles[1:2] ))
 
 
 
