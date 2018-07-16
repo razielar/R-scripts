@@ -44,10 +44,24 @@ if (opt$input == "stdin") {
   
 }
 
+############################# Function: 
+
+f.Print.the.txt.output <- function(out.put.name){
+  
+  new_name <- strsplit(out.put.name, split = ".", fixed = TRUE)
+  new_name <- lapply(new_name, function(x){y <- x[1:(length(x)-1)]; paste0(y, collapse = ".")})
+  new_name <- new_name %>% unlist()
+  new_name <- paste0(new_name, ".txt")
+  
+  return(new_name)
+  
+}
+
 ### For debugging inside Rstudio
 
 #Input <- read.delim("/users/rg/ramador/Scripts/tmp_files/Venn.R.out.txt", h=TRUE, na.strings = "")
 #Input <- read.delim("/users/rg/ramador/Scripts/tmp_files/Venn.4.fields.txt", h=TRUE, na.strings = "")
+
 
 ### This script can only do 5 comparisons 
 
@@ -79,6 +93,18 @@ if(ncol(Input) == 5){
                col="transparent", fill=c("darkorchid1", "green", "yellow", "cornflowerblue"), alpha=0.4,
                cex=1.3, cat.cex=0.9, main = opt$title )
   
+  ### Print the Intersections: 
+  
+  Intersection <- data.frame(Four_intersections=Reduce(intersect, 
+                                                        list(Input[,1][complete.cases(Input[,1])], 
+                                                                        Input[,2][complete.cases(Input[,2])], 
+                                                                        Input[,3][complete.cases(Input[,3])],
+                                                             Input[,4][complete.cases(Input[,4])] ) ) )
+  
+  new_name <- f.Print.the.txt.output(opt$output)
+  
+  write.table(Intersection, file = new_name, sep = "/t", col.names = TRUE, quote = FALSE, row.names = FALSE)
+  
 } else if (ncol(Input) == 3){
   
   cat("Drawing the Venn Diagram with", ncol(Input), "comparisons", "\n")
@@ -90,7 +116,16 @@ if(ncol(Input) == 5){
                cex=1.3, col="transparent", fill=c("darkorchid1", "green", "yellow"), alpha=0.4,
                main = opt$title  )
   
+  ### Print the Intersections: 
   
+  Intersection <- data.frame(Three_intersections=Reduce(intersect, list(Input[,1][complete.cases(Input[,1])], 
+                                                                        Input[,2][complete.cases(Input[,2])], 
+       Input[,3][complete.cases(Input[,3])]) ) )
+  
+  new_name <- f.Print.the.txt.output(opt$output)
+  
+  write.table(Intersection, file = new_name, sep = "/t", col.names = TRUE, quote = FALSE, row.names = FALSE)
+
   
 } else if (ncol(Input) == 2){
   
@@ -101,28 +136,23 @@ if(ncol(Input) == 5){
                fill=c("darkorchid1", "green"), alpha=0.4, cex=1.3, cat.cex= 0.9,
                main = opt$title, cat.pos= c(0,0), cat.dist = rep(0.025, 2), scaled= FALSE )
   
-  ### Print the Intersections and non-intersections 
+  ### Print the Intersections: 
   
   Intersection <- data.frame(Intersection=intersect(Input[,1], Input[,2]))
   
-  new_name <- strsplit(opt$output, split = ".", fixed = TRUE)
-  new_name <- lapply(new_name, function(x){y <- x[1:(length(x)-1)]; paste0(y, collapse = ".")})
-  new_name <- new_name %>% unlist()
-  new_name <- paste0(new_name, ".txt")
+  new_name <- f.Print.the.txt.output(opt$output)
   
   write.table(Intersection, file = new_name, sep = "/t", col.names = TRUE, quote = FALSE, row.names = FALSE)
   
-  # tmp <- c(Input[,1][complete.cases(Input[,1])], Input[,2][complete.cases(Input[,2])]) 
-  # 
-  # Non_intersection <- tmp[which(!(tmp %in% Intersection$Intersection))]
-  # Non_intersection <- data.frame(Non_intersection=Non_intersection)
-  # 
-  # Final <- rbind(Intersection, Non_intersection)
-  
-  
-  
 }
 
+
+# tmp <- c(Input[,1][complete.cases(Input[,1])], Input[,2][complete.cases(Input[,2])]) 
+# 
+# Non_intersection <- tmp[which(!(tmp %in% Intersection$Intersection))]
+# Non_intersection <- data.frame(Non_intersection=Non_intersection)
+# 
+# Final <- rbind(Intersection, Non_intersection)
 
 ### Put the name of the subsets: 
 
