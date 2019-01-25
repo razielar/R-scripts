@@ -10,6 +10,7 @@ options(stringsAsFactors =  FALSE)
 suppressPackageStartupMessages(library(dplyr))
 suppressPackageStartupMessages(library(VennDiagram))
 suppressPackageStartupMessages(library(optparse))
+suppressPackageStartupMessages(library(plyr))
 
 ###### Option list using Python's style
 
@@ -62,7 +63,7 @@ f.Print.the.txt.output <- function(out.put.name){
 #Input <- read.delim("/users/rg/ramador/Scripts/tmp_files/Venn.R.out.txt", h=TRUE, na.strings = "")
 #Input <- read.delim("/users/rg/ramador/Scripts/tmp_files/Venn.4.fields.txt", h=TRUE, na.strings = "")
 
-
+Input <- Input[,1:2]
 ### This script can only do 5 comparisons 
 
 if( ncol(Input) > 1 && ncol(Input) <= 5 ){
@@ -142,15 +143,16 @@ if(ncol(Input) == 5){
   
   new_name <- f.Print.the.txt.output(opt$output)
   
-  write.table(Intersection, file = new_name, sep = "/t", col.names = TRUE, quote = FALSE, row.names = FALSE)
+  write.table(Intersection, file = new_name, col.names = TRUE, row.names = FALSE,
+              quote = FALSE, sep = "\t")
   
 }
 
 
-# tmp <- c(Input[,1][complete.cases(Input[,1])], Input[,2][complete.cases(Input[,2])]) 
-# 
-# Non_intersection <- tmp[which(!(tmp %in% Intersection$Intersection))]
-# Non_intersection <- data.frame(Non_intersection=Non_intersection)
+
+
+
+
 # 
 # Final <- rbind(Intersection, Non_intersection)
 
