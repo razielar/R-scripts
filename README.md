@@ -7,7 +7,7 @@
 3. [Count Bar plot](#bar)
 4. [Shannon's entropy and Isoform ratio](#entropy)
 5. [Venn Diagram](#venn)
-
+6. [Boxplots Area Pixels](#image_pixels)
 
 ## 1) <a id='Obtaining'></a> Obtaining.metadata.R
 
@@ -99,3 +99,15 @@ Features:
 
 * Handling command-flags: *available*
 * Handling standard input: *available*
+
+## 6) <a id='image_pixels'></a> Boxplots Area Pixels
+
+Description:
+
+Receives a *csv file* and returns Boxplots (ggplot2) in pdf, in x-axis the different phenotypes and y-axis relative wing area in pixels.  
+
+```{r}
+
+cat file.csv | ./Bar.ggplot.R
+
+```
