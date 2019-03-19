@@ -23,7 +23,13 @@ option_list <- list(
               help="output file name. Must have a pdf extension (e.g. 'What.ever.pdf') [default= %default]", 
               metavar="character"),
   make_option(c("-t", "--title"), type="character", default = "Input Matrix",
-              help = "Title of Pie plot [default=%default]")
+              help = "Title of Pie plot [default=%default]"),
+  make_option(c("-f", "--font"), type = "double", default = 1.5,
+              help = "Font size of the pie plot (cex) [default=%default]"),
+  make_option(c("-sc", "--selectColor"), default = FALSE,
+              help = "Select your own color palette [default=%default]"),
+  make_option(c("-p", "--palette"),type = "character", default = "/users/rg/ramador/R/palettes/3.colors.browns.txt",
+              help = "File with the color palette [default=%default]")
   
 )
 
@@ -57,8 +63,31 @@ full_labels <- paste(labels, counts, sep = ": ")
 
 ### Plot:
 
-pdf(file = opt$output, width = 0, height = 0, paper = "a4r")
-pie(x=counts, labels = full_labels, main=opt$title,
-    col = brewer.pal(length(full_labels), "Set1"), cex=1.5 )
-dev.off()
+if(opt$selectColor){
+  
+  #Read_color palette: 
+  color_palette <- read.delim(opt$palette, header = FALSE)$V1 %>% as.character()
+
+  pdf(file = opt$output, width = 0, height = 0, paper = "a4r")
+  
+  pie(x=counts, labels = full_labels, main=opt$title,
+      col = color_palette , cex=opt$font)
+  
+  dev.off()
+  
+  
+  
+} else{
+  
+  pdf(file = opt$output, width = 0, height = 0, paper = "a4r")
+  
+  pie(x=counts, labels = full_labels, main=opt$title,
+      col = brewer.pal(length(full_labels), "Set1"), cex=opt$font)
+  
+  dev.off()
+  
+}
+
+
+
 
