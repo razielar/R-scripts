@@ -31,12 +31,7 @@ Usage:
 
 ## 2) <a id='pie'></a> Pie.plot.R
 
-Features:
-* Handling command-flags: *available*
-* Handling standard input: *available*
-* Handling multiple input files: *not available yet*
-
-There are two types of usage:
+There are three types of usage:
 
 **a)** Default usage: the input file is the standard input:
 
@@ -53,6 +48,15 @@ awk -F "\t" '{print $2}' Input.file.txt | ./Pie.plot.R
 ./Pie.plot.R --input=Input.file.txt --header=TRUE --output="trial.pdf" --title="Example"
 
 ```
+**c)** Specifying a specific color palette:
+
+```{r}
+
+awk -F "\t" '{print $2}' Input.file.txt |\
+./Pie.plot.R --selectColor=TRUE --palette=/nfs/users2/rg/ramador/R/palettes/example.palette.txt
+
+```
+
 ## 3) <a id='bar'></a> Bar.ggplot.R
 
 Same features as *Pie.plot.R*
