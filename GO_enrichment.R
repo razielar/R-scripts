@@ -13,7 +13,7 @@ options(stringsAsFactors = FALSE)
 
 option_list <- list(
   
-  make_option(c("-u", "--universe"), help = "a list of gene identifiers, NO header"),
+  make_option(c("-u", "--universe"), help = "a list of gene identifiers, WITH header"),
   make_option(c("-G", "--genes"), default = "stdin",
               help = "a list of gene identifiers for the foreground, NO header [default=%default]"),
   make_option(c("-O", "--ontology"), help = "choose the Gene Ontology < (BP,MF,CC) > [default=%default]", 
@@ -27,10 +27,25 @@ option_list <- list(
 opt_parser <- OptionParser(option_list = option_list)
 opt <- parse_args(opt_parser)
 
+if(opt$species == "Dmel"){
+  ann<- "org.Dm.eg.db"; suppressPackageStartupMessages(library(org.Dm.eg.db))
+}
+if(opt$species == "Human"){
+  ann<- "org.Hs.eg.db"; suppressPackageStartupMessages(library(org.Hs.eg.db))
+}
 
+############################
+# BEGIN
+############################
 
+U <- read.delim(opt$universe, col.names = "hs")
+U$hs <- unique(U$hs)
 
-
+if(opt$genes == "stdin"){
+  G <- read.delim(file("stdin"), header = FALSE) 
+} else{
+  G <- read.delim(opt$genes, header = FALSE)
+}
 
 
 
