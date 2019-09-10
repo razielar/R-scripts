@@ -8,6 +8,7 @@ suppressPackageStartupMessages(library(dplyr))
 suppressPackageStartupMessages(library(GO.db))
 suppressPackageStartupMessages(library(GOstats))
 suppressPackageStartupMessages(library(DBI))
+suppressPackageStartupMessages(library(RSQLite))
 options(stringsAsFactors = FALSE)
 
 ##### Option list using Python's style: 
@@ -51,7 +52,7 @@ if(opt$genes == "stdin"){
 
 ######### Debuggin purposes: 
 # U <- read.delim("/nfs/users2/rg/ramador/D_me/Data/Genes/GeneUniverse.16392.txt", col.names = "hs")
-# G <- read.delim("/nfs/users2/rg/ramador/D_me/RNA-seq/ERC_data/K_means/Results/35.PCG.overlapping.genic.lncRNAs.txt", 
+# G <- read.delim("/nfs/users2/rg/ramador/D_me/RNA-seq/ERC_data/K_means/Results/35.PCG.overlapping.genic.lncRNAs.txt",
 #                 header = FALSE, col.names = "hs")
 ######### Debuggin purposes
 
@@ -95,11 +96,11 @@ cat("Finished Hypergeometric test", "\n")
 
 # Reformat the output table: 
 df <- summary(res)
-df$Pvalue <- round(df$Pvalue, digits = 2)
-df$OddsRatio <- round(df$OddsRatio, 2)
-df$ExpCount <- round(df$ExpCount, 2)
-
-htmlReport(res)
-
+print(df)
+# df$Pvalue <- round(df$Pvalue, digits = 2)
+# df$OddsRatio <- round(df$OddsRatio, 2)
+# df$ExpCount <- round(df$ExpCount, 2)
+# 
+# htmlReport(res)
 
 
