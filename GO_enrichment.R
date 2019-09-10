@@ -93,6 +93,13 @@ res <- hyperGTest(createParams(unique(G$hs), opt$species))
 
 cat("Finished Hypergeometric test", "\n")
 
+# Reformat the output table: 
+df <- summary(res)
+df$Pvalue <- round(df$Pvalue, digits = 2)
+df$OddsRatio <- round(df$OddsRatio, 2)
+df$ExpCount <- round(df$ExpCount, 2)
+
+htmlReport(res)
 
 
 
