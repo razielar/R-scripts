@@ -4,7 +4,8 @@
 
 ##### Libraries:
 suppressPackageStartupMessages(library(optparse))
-suppressPackageStartupMessages(library(dplyr))
+# suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(plyr))
 suppressPackageStartupMessages(library(GO.db))
 suppressPackageStartupMessages(library(GOstats))
 suppressPackageStartupMessages(library(DBI))
@@ -74,33 +75,58 @@ createParams <- function(x, species= "Dme"){
   if(species == "Dme"){
     geneset <- unlist(mget(x, org.Dm.egENSEMBL2EG, ifnotfound = NA))
   }
+  # print(length(x), length(unique(geneset)))
   sprintf("%s foreground genes; %s with a corresponding entrez id", length(x),
           length(unique(geneset)))
-  pv <- 1-(1-0.05)**length(x)
-  print(pv)
+  # pv <- 1-(1-0.05)**length(x)
+  # print(pv)
   params <- new("GOHyperGParams",
                 geneIds= geneset,
                 universeGeneIds=universe,
                 annotation=ann,
                 ontology= opt$ontology,
-                pvalueCutoff= pv,
+                pvalueCutoff= 0.01,
                 conditional= TRUE,
                 testDirection="over")
   
   return(params)
 }
 
-res <- hyperGTest(createParams(unique(G$hs), opt$species))
-
+res <- suppressWarnings(hyperGTest(createParams(unique(G$hs), opt$species)))
 cat("Finished Hypergeometric test", "\n")
+res 
 
 # Reformat the output table: 
 df <- summary(res)
-print(df)
+
 # df$Pvalue <- round(df$Pvalue, digits = 2)
-# df$OddsRatio <- round(df$OddsRatio, 2)
-# df$ExpCount <- round(df$ExpCount, 2)
+df$OddsRatio <- round(df$OddsRatio, 2)
+df$ExpCount <- round(df$ExpCount, 2)
+
+df <- df[df$Count >= 3,]
+print(df)
+
 # 
 # htmlReport(res)
+
+# Get the genes for enriched GO terms
+
+enrichGenes <- lapply(geneIdsByCategory(res, catids=sigCategories(res, pvalueCutoff(res))), 
+                      data.frame)
+
+length(enrichGenes)
+# enrichGenes[[2]] <- mapIds(eval(parse(text=ann)), keys=enrichGenes[[2]], 
+#                            keytype="ENTREZID", column=c("ENSEMBL"))
+# colnames(enrichGenes) <- c("GO", "gene_id")
+# 
+# print(enrichGenes)
+
+
+
+
+
+
+
+
 
 
