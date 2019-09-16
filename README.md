@@ -8,6 +8,7 @@
 4. [Shannon's entropy and Isoform ratio](#entropy)
 5. [Venn Diagram](#venn)
 6. [Boxplots Area Pixels](#image_pixels)
+7. [GO enrichment](#go)
 
 ## 1) <a id='Obtaining'></a> Obtaining.metadata.R
 
@@ -115,3 +116,17 @@ Receives a *csv file* and returns Boxplots (ggplot2) in pdf, in x-axis the diffe
 cat file.csv | ./Bar.ggplot.R
 
 ```
+
+## 7) <a id='go'></a> GO enrichment 
+
+*Requires R > 3.6* for the Bioconductor libraries: GO.db, GOstats and biomart
+
+
+
+
+
+
+
+
+
+
