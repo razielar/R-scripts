@@ -55,6 +55,10 @@ if(opt$genes == "stdin"){
 # U <- read.delim("/nfs/users2/rg/ramador/D_me/Data/Genes/GeneUniverse.16392.txt", col.names = "hs")
 # G <- read.delim("/nfs/users2/rg/ramador/D_me/RNA-seq/ERC_data/K_means/Results/35.PCG.overlapping.genic.lncRNAs.txt",
 #                 header = FALSE, col.names = "hs")
+# U <- read.delim("/Users/raziel/Documents/GeneUniverse.16392.txt", col.names = "hs")
+# G <- read.delim("/Users/raziel/Documents/35.PCG.overlapping.genic.lncRNAs.txt",
+#                 header = FALSE, col.names = "hs")
+
 ######### Debuggin purposes
 
 # Take the Flybase IDs for all orthologous genes which will be my universe
