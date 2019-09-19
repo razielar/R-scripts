@@ -50,9 +50,8 @@ if(opt$species == "Human"){
 # G <- read.delim("Documents/Home.office.2019/GO.adipose.omentum.txt", header = FALSE, col.names = "hs")
 ######### Debuggin purposes
 #Information regarding Gene_Universe: https://www.researchgate.net/post/How_do_you_perform_a_gene_ontology_with_topGO_in_R_with_a_predefined_gene_list
-U <- read.delim(opt$universe, header = FALSE, col.names = "hs")
-U$hs <- unique(U$hs)
-print(U)
+# U <- read.delim(opt$universe, col.names = "hs")
+# U$hs <- unique(U$hs)
 
 if(opt$genes == "stdin"){
   G <- read.delim(file("stdin"), header = FALSE, col.names = "hs") 
@@ -60,7 +59,7 @@ if(opt$genes == "stdin"){
   G <- read.delim(opt$genes, header = FALSE, col.names = "hs")
 }
 
-
+print(head(G))
 #### 1) Convert Dme from FlyBaseID to entrez
 #### 2) Convert Human from Ensembl to entrez 
 if(opt$species == "Human"){
@@ -70,9 +69,10 @@ if(opt$species == "Human"){
   my_ensembl_gene <- getBM(attributes = "ensembl_gene_id", filters = 'chromosome_name',
                            values = my_chr, mart = ensembl)
   
-  convert_genes <-  my_ensembl_gene[which( my_ensembl_gene$ensembl_gene_id %in% G$gene_id ),]
+  convert_genes <-  my_ensembl_gene[which( my_ensembl_gene$ensembl_gene_id %in% G$hs ),]
   # G[which(!(G$gene_id %in% convert_genes)),] %>% dim()
-  convert_genes <- getBM(attributes = c("ensembl_gene_id", "entrezgene_id"), filters = "ensembl_gene_id",
+  convert_genes <- getBM(attributes = c("ensembl_gene_id", "entrezgene_id"), 
+                         filters = "ensembl_gene_id",
                          values = convert_genes, mart = ensembl)
 }
 
