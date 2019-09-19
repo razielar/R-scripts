@@ -4,7 +4,6 @@
 ##### Libraries:
 suppressPackageStartupMessages(library(optparse))
 suppressPackageStartupMessages(library(biomaRt))
-# suppressPackageStartupMessages(library(dplyr))
 suppressPackageStartupMessages(library(plyr))
 suppressPackageStartupMessages(library(GO.db))
 suppressPackageStartupMessages(library(GOstats))
@@ -14,7 +13,6 @@ options(stringsAsFactors = FALSE)
 
 ##### Option list using Python's style: 
 option_list <- list(
-  
   make_option(c("-u", "--universe"), help = "a list of gene identifiers, WITH header"),
   make_option(c("-G", "--genes"), default = "stdin",
               help = "a list of gene identifiers for the foreground, NO header [default=%default]"),
@@ -39,28 +37,6 @@ if(opt$species == "Human"){
 ############################
 # BEGIN
 ############################
-#### 1) Convert Dme from FlyBaseID to entrez
-#### 2) Convert Human from Ensembl to entrez 
-ensembl <- useMart("ensembl", dataset = "hsapiens_gene_ensembl")
-my_chr <- c(1:22, 'M', 'X', 'Y')
-my_ensembl_gene <- getBM(attributes = "ensembl_gene_id", filters = 'chromosome_name',
-                         values = my_chr, mart = ensembl)
-
-convert_genes <-  my_ensembl_gene[which( my_ensembl_gene$ensembl_gene_id %in% G$gene_id ),]
-# G[which(!(G$gene_id %in% convert_genes)),] %>% dim()
-convert_genes <- getBM(attributes = c("ensembl_gene_id", "entrezgene_id"), filters = "ensembl_gene_id",
-      values = convert_genes, mart = ensembl)
-
-#Information regarding Gene_Universe: https://www.researchgate.net/post/How_do_you_perform_a_gene_ontology_with_topGO_in_R_with_a_predefined_gene_list
-U <- read.delim(opt$universe, col.names = "hs")
-U$hs <- unique(U$hs)
-
-if(opt$genes == "stdin"){
-  G <- read.delim(file("stdin"), header = FALSE, col.names = "hs") 
-} else{
-  G <- read.delim(opt$genes, header = FALSE, col.names = "hs")
-}
-
 ######### Debuggin purposes: 
 ### D_me: 
 # U <- read.delim("/nfs/users2/rg/ramador/D_me/Data/Genes/GeneUniverse.16392.txt", col.names = "hs")
@@ -72,6 +48,31 @@ if(opt$genes == "stdin"){
 ### Human:
 # G <- read.delim("Documents/Home.office.2019/GO.adipose.omentum.txt")
 ######### Debuggin purposes
+#Information regarding Gene_Universe: https://www.researchgate.net/post/How_do_you_perform_a_gene_ontology_with_topGO_in_R_with_a_predefined_gene_list
+U <- read.delim(opt$universe, col.names = "hs")
+U$hs <- unique(U$hs)
+
+if(opt$genes == "stdin"){
+  G <- read.delim(file("stdin"), header = FALSE, col.names = "hs") 
+} else{
+  G <- read.delim(opt$genes, header = FALSE, col.names = "hs")
+}
+
+
+#### 1) Convert Dme from FlyBaseID to entrez
+#### 2) Convert Human from Ensembl to entrez 
+if(opt$species == "Human"){
+  cat("Converting ensembl to entrez_gene_id....", "\n")
+  ensembl <- useMart("ensembl", dataset = "hsapiens_gene_ensembl")
+  my_chr <- c(1:22, 'M', 'X', 'Y')
+  my_ensembl_gene <- getBM(attributes = "ensembl_gene_id", filters = 'chromosome_name',
+                           values = my_chr, mart = ensembl)
+  
+  convert_genes <-  my_ensembl_gene[which( my_ensembl_gene$ensembl_gene_id %in% G$gene_id ),]
+  # G[which(!(G$gene_id %in% convert_genes)),] %>% dim()
+  convert_genes <- getBM(attributes = c("ensembl_gene_id", "entrezgene_id"), filters = "ensembl_gene_id",
+                         values = convert_genes, mart = ensembl)
+}
 
 # Take the Flybase IDs for all orthologous genes which will be my universe
 if(opt$species == "Dme"){
