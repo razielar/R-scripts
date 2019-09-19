@@ -46,11 +46,13 @@ if(opt$species == "Human"){
 # G <- read.delim("/Users/raziel/Documents/35.PCG.overlapping.genic.lncRNAs.txt",
 #                 header = FALSE, col.names = "hs")
 ### Human:
-# G <- read.delim("Documents/Home.office.2019/GO.adipose.omentum.txt")
+# U <- read.delim("Documents/Home.office.2019/GeneUniverse.txt", header = FALSE, col.names = "hs")
+# G <- read.delim("Documents/Home.office.2019/GO.adipose.omentum.txt", header = FALSE, col.names = "hs")
 ######### Debuggin purposes
 #Information regarding Gene_Universe: https://www.researchgate.net/post/How_do_you_perform_a_gene_ontology_with_topGO_in_R_with_a_predefined_gene_list
-U <- read.delim(opt$universe, col.names = "hs", header = FALSE)
+U <- read.delim(opt$universe, header = FALSE, col.names = "hs")
 U$hs <- unique(U$hs)
+print(U)
 
 if(opt$genes == "stdin"){
   G <- read.delim(file("stdin"), header = FALSE, col.names = "hs") 
