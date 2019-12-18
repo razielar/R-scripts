@@ -3,13 +3,14 @@
 ############################### GO enrichment analysis
 ##### Libraries:
 suppressPackageStartupMessages(library(optparse))
+suppressPackageStartupMessages(library(DOSE))
 suppressPackageStartupMessages(library(biomaRt))
-suppressPackageStartupMessages(library(plyr))
-suppressPackageStartupMessages(library(GO.db))
-suppressPackageStartupMessages(library(GOstats))
-suppressPackageStartupMessages(library(DBI))
-suppressPackageStartupMessages(library(RSQLite))
-options(stringsAsFactors = FALSE)
+## suppressPackageStartupMessages(library(plyr))
+## suppressPackageStartupMessages(library(GO.db))
+## suppressPackageStartupMessages(library(GOstats))
+## suppressPackageStartupMessages(library(DBI))
+## suppressPackageStartupMessages(library(RSQLite))
+## options(stringsAsFactors = FALSE)
 
 ##### Option list using Python's style: 
 option_list <- list(
